@@ -3,15 +3,15 @@ package com.mobiiworld.ui
 import android.app.Application
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.mobiiworld.repository.NewsRepository
+import com.mobiiworld.repository.SquareRepository
 /*
 To define how our view model should be created
  */
-class NewsViewModelProviderFactory(
+class SquareViewModelProviderFactory(
     val app: Application,
-    val newsRepository: NewsRepository
+    val squareRepository: SquareRepository
     ) : ViewModelProvider.Factory{
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
-        return NewsViewModel(app, newsRepository) as T
+        return SquareViewModel(app, squareRepository) as T
     }
 }

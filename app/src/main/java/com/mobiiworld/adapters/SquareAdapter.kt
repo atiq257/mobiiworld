@@ -11,9 +11,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.mobiiworld.R
 import com.mobiiworld.models.Square
 
-class NewsAdapter : RecyclerView.Adapter<NewsAdapter.ArticleViewHolder>() {
+class SquareAdapter : RecyclerView.Adapter<SquareAdapter.RepositoryViewHolder>() {
 
-    inner class ArticleViewHolder(itemView: View):RecyclerView.ViewHolder(itemView){
+    inner class RepositoryViewHolder(itemView: View):RecyclerView.ViewHolder(itemView){
         val  txtName = itemView.findViewById<TextView>(R.id.tvSource)
         val rating = itemView.findViewById<AppCompatRatingBar>(R.id.ratingStar)
         init {
@@ -41,18 +41,18 @@ class NewsAdapter : RecyclerView.Adapter<NewsAdapter.ArticleViewHolder>() {
     // tool that will take the two list and tell the differences
     val differ= AsyncListDiffer(this, differCallback)
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ArticleViewHolder {
-        return ArticleViewHolder(
-            LayoutInflater.from(parent.context).inflate(R.layout.item_article_preview, parent, false))
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RepositoryViewHolder {
+        return RepositoryViewHolder(
+            LayoutInflater.from(parent.context).inflate(R.layout.item_repositoy, parent, false))
     }
 
-    override fun onBindViewHolder(holder: ArticleViewHolder, position: Int) {
-        val article= differ.currentList[position]
-        holder.txtName.text = article.name
-        holder.rating.rating = (article.stargazers_count?:0).toFloat()
+    override fun onBindViewHolder(holder: RepositoryViewHolder, position: Int) {
+        val repository = differ.currentList[position]
+        holder.txtName.text = repository.name
+        holder.rating.rating = (repository.stargazers_count?:0).toFloat()
         holder.itemView.apply {
             setOnClickListener {
-                onItemClickListener?.let { it(article) }
+                onItemClickListener?.let { it(repository) }
             }
         }
     }

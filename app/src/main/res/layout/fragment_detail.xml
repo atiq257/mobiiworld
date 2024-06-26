@@ -7,6 +7,8 @@
     android:background="@color/white"
     android:paddingTop="48dp"
     android:paddingHorizontal="16dp"
+    android:clickable="true"
+    android:focusable="true"
     tools:context=".ui.fragments.DetailFragment">
 
 

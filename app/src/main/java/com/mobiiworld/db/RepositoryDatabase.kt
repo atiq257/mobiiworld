@@ -8,7 +8,7 @@ import com.mobiiworld.models.Square
 Database class for Room always need to be abstract
 @Database annotation to let room know the class
 pass parameter:
-    List of entities, here we only have one single table: article
+    List of entities, here we only have one single table: repository
 
  */
 @Database(
@@ -18,17 +18,17 @@ pass parameter:
 
 //@TypeConverters(Converters::class)
 
-abstract class ArticleDatabase : RoomDatabase(){
+abstract class RepositoryDatabase : RoomDatabase(){
 
-    //function to return ArticleDao
-    abstract fun getArticleDao(): ArticleDao
+    //function to return RepositoryDao
+    abstract fun getRepositoryDao(): RepositoryDao
 
     //companion object to create an database
     companion object{
         //Volatile so that other threads can see immediately when thread changes this instance
         @Volatile
-        private var instance: ArticleDatabase? =null
-        //Lock variable to sync the instance, to make sure there is only one instance of ArticleDatabase at once
+        private var instance: RepositoryDatabase? =null
+        //Lock variable to sync the instance, to make sure there is only one instance of RepositoryDatabase at once
         private val LOCK= Any()
 
         //operator function called whenever we create the instance of our database
@@ -45,7 +45,7 @@ abstract class ArticleDatabase : RoomDatabase(){
         private fun createDatabase(context: Context)=
             Room.databaseBuilder(
                 context.applicationContext,
-                ArticleDatabase::class.java,
+                RepositoryDatabase::class.java,
                 "square_db.db"
             ).build()
 

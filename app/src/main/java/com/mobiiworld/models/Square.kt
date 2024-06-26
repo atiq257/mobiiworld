@@ -5,10 +5,10 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 import kotlinx.parcelize.Parcelize
 /*
-To save the article to database we need to annotate the class with entity
-which will tell the android studio that this article class is the table in database
+To save the repository to database we need to annotate the class with entity
+which will tell the android studio that this Square class is the table in database
 
-Here article will be the whole table and with columns
+Here squares will be the whole table and with columns
  */
 @Entity(
     tableName = "squares"

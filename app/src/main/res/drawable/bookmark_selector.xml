@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <item android:drawable="@drawable/bookmarkd" android:state_selected="true" />
-    <item android:drawable="@android:drawable/btn_plus" android:state_selected="false" />
+    <item android:drawable="@android:drawable/star_big_on" android:state_selected="true" />
+    <item android:drawable="@android:drawable/star_big_off" android:state_selected="false" />
 </selector>

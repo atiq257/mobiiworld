@@ -11,11 +11,11 @@ import androidx.appcompat.widget.AppCompatImageButton
 import androidx.appcompat.widget.AppCompatRatingBar
 import androidx.lifecycle.ViewModelProvider
 import com.mobiiworld.R
-import com.mobiiworld.db.ArticleDatabase
+import com.mobiiworld.db.RepositoryDatabase
 import com.mobiiworld.models.Square
-import com.mobiiworld.repository.NewsRepository
-import com.mobiiworld.ui.NewsViewModel
-import com.mobiiworld.ui.NewsViewModelProviderFactory
+import com.mobiiworld.repository.SquareRepository
+import com.mobiiworld.ui.SquareViewModel
+import com.mobiiworld.ui.SquareViewModelProviderFactory
 
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
 private const val ARG_PARAM1 = "param1"
@@ -27,11 +27,11 @@ private const val ARG_PARAM1 = "param1"
  */
 class DetailFragment : Fragment() {
     private var square: Square? = null
-    private var ratingBar:AppCompatRatingBar? = null
-    private var bookmark:AppCompatImageButton? = null
-    private var txtTitle:TextView? = null
-    lateinit var viewModel: NewsViewModel
-    private lateinit var ctx:Context
+    private var ratingBar: AppCompatRatingBar? = null
+    private var bookmark: AppCompatImageButton? = null
+    private var txtTitle: TextView? = null
+    lateinit var viewModel: SquareViewModel
+    private lateinit var ctx: Context
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -43,10 +43,10 @@ class DetailFragment : Fragment() {
         arguments?.let {
             square = it.getParcelable(ARG_PARAM1)
         }
-        val repository = NewsRepository(ArticleDatabase(ctx))
+        val repository = SquareRepository(RepositoryDatabase(ctx))
         val viewModelProviderFactory =
-            NewsViewModelProviderFactory(requireActivity().application, repository)
-        viewModel = ViewModelProvider(this, viewModelProviderFactory)[NewsViewModel::class.java]
+            SquareViewModelProviderFactory(requireActivity().application, repository)
+        viewModel = ViewModelProvider(this, viewModelProviderFactory)[SquareViewModel::class.java]
     }
 
     override fun onCreateView(
@@ -54,7 +54,7 @@ class DetailFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        val view =  inflater.inflate(R.layout.fragment_detail, container, false)
+        val view = inflater.inflate(R.layout.fragment_detail, container, false)
         ratingBar = view.findViewById(R.id.ratingStar)
         bookmark = view.findViewById(R.id.imgBookmark)
         txtTitle = view.findViewById(R.id.txtTitle)
@@ -65,14 +65,14 @@ class DetailFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         txtTitle?.text = square?.name
-        bookmark?.isSelected = square?.isBookmarked?:false
+        bookmark?.isSelected = square?.isBookmarked ?: false
 
-        ratingBar?.rating = (square?.stargazers_count?:0).toFloat()
+        ratingBar?.rating = (square?.stargazers_count ?: 0).toFloat()
 
         bookmark?.setOnClickListener {
-            square?.isBookmarked = !(square?.isBookmarked?:false)
+            square?.isBookmarked = !(square?.isBookmarked ?: false)
             square?.let { it1 -> viewModel.updateBookmark(it1) }
-            bookmark?.isSelected = square?.isBookmarked?:false
+            bookmark?.isSelected = square?.isBookmarked ?: false
         }
     }
 

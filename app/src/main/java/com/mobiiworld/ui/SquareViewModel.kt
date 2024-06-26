@@ -10,24 +10,24 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.mobiiworld.SquareApplication
 import com.mobiiworld.models.Square
-import com.mobiiworld.repository.NewsRepository
+import com.mobiiworld.repository.SquareRepository
 import com.mobiiworld.utils.Constants.Companion.QUERY_PAGE_SIZE
 import com.mobiiworld.utils.Resource
 import kotlinx.coroutines.launch
 import retrofit2.Response
 import java.io.IOException
 
-class NewsViewModel(
+class SquareViewModel(
     app: Application,
-    val newsRepository: NewsRepository //parameter
+    val squareRepository: SquareRepository //parameter
 ) : AndroidViewModel(app){ //inheriting from android view model to use application context
     //here we use application context to get the context throughout the app running,
     //so it will work even if the activity changes or destroys, the app context will still work until the app's running
 
     //LIVEDATA OBJECT
-    private val _breakingNews= MutableLiveData<Resource<ArrayList<Square>>>()
+    private val _repository= MutableLiveData<Resource<ArrayList<Square>>>()
 
-    val breakingNews: LiveData<Resource<ArrayList<Square>>> get() = _breakingNews
+    val repository: LiveData<Resource<ArrayList<Square>>> get() = _repository
 
     var lastDataSize = 0
     var page = 1
@@ -41,7 +41,7 @@ class NewsViewModel(
     /*
     viewModelScope makes the function alive only as long as the ViewModel is alive
      */
-    fun getBreakingNews(perPage: Int)= viewModelScope.launch {
+    fun getRepositories(perPage: Int)= viewModelScope.launch {
         //breakingNews.postValue(Resource.Loading()) //init loading state before the network call
         safeBreakingNewsCall(perPage,page)
     }
@@ -51,7 +51,7 @@ class NewsViewModel(
 
     fun updateBookmark(square: Square){
         viewModelScope.launch {
-            newsRepository.upsert(square)
+            squareRepository.upsert(square)
         }
     }
 
@@ -59,14 +59,14 @@ class NewsViewModel(
     private fun handleBreakingNewsResponse(response: Response<ArrayList<Square>>): Resource<ArrayList<Square>> {
         if (response.isSuccessful){
             response.body()?.let { resultResponse ->
-                saveArticle(resultResponse)
+                saveRepositories(resultResponse)
                 lastDataSize = resultResponse.size
                 if (lastDataSize == QUERY_PAGE_SIZE) {
                     page += 1
                 }
-                val oldArticles= breakingNews.value?.data //else, add all articles to old
-                oldArticles?.addAll(resultResponse) //add new articles to old articles
-                return  Resource.Success(oldArticles ?: resultResponse)
+                val oldRepositories= repository.value?.data //else, add all repositories to old
+                oldRepositories?.addAll(resultResponse) //add new repositories to old repositories
+                return  Resource.Success(oldRepositories ?: resultResponse)
             }
         }
         return Resource.Error(response.message())
@@ -74,53 +74,53 @@ class NewsViewModel(
 
 
     /*
-    function to save articles to db: coroutine
+    function to save repositories to db: coroutine
      */
-    fun saveArticle(square: Square)= viewModelScope.launch {
-        newsRepository.upsert(square)
+    fun saveRepository(square: Square)= viewModelScope.launch {
+        squareRepository.upsert(square)
     }
 
     /*
-    function to save articles to db: coroutine
+    function to save repositories to db: coroutine
      */
-    fun saveArticle(square: List<Square>)= viewModelScope.launch {
-        newsRepository.upsert(square)
+    fun saveRepositories(square: List<Square>)= viewModelScope.launch {
+        squareRepository.upsert(square)
     }
 
     /*
-    function to get all saved news articles
+    function to get all saved news repositories
      */
-    fun getSavedArticle() = newsRepository.getSavedNews()
+    fun getSavedRepositories() = squareRepository.getSavedRepositories()
 
     /*
-    function to delete article from db
+    function to delete repository from db
      */
-    fun deleteSavedArticle(square: Square)= viewModelScope.launch {
-        newsRepository.deleteArticle(square)
+    fun deleteRepository(square: Square)= viewModelScope.launch {
+        squareRepository.deleteRepository(square)
     }
 
     private suspend fun safeBreakingNewsCall(perPage:Int,page:Int){
-        _breakingNews.postValue(Resource.Loading(breakingNews.value?.data))
-        val savedData = getSavedArticle()
+        _repository.postValue(Resource.Loading(repository.value?.data))
+        val savedData = getSavedRepositories()
         if (savedData?.value == null){
             try{
                 if (hasInternetConnection()){
-                    val response = newsRepository.getRepositories(perPage,page)
+                    val response = squareRepository.getRepositories(perPage,page)
                     //handling response
                     val data = handleBreakingNewsResponse(response)
-                    _breakingNews.postValue(data)
+                    _repository.postValue(data)
                 }else{
-                    _breakingNews.postValue(Resource.Error("No Internet Connection"))
+                    _repository.postValue(Resource.Error("No Internet Connection"))
                 }
 
             } catch (t: Throwable){
                 when(t){
-                    is IOException-> _breakingNews.postValue(Resource.Error("Network Failure"))
-                    else-> _breakingNews.postValue(Resource.Error("Conversion Error"))
+                    is IOException-> _repository.postValue(Resource.Error("Network Failure"))
+                    else-> _repository.postValue(Resource.Error("Conversion Error"))
                 }
             }
         } else {
-            _breakingNews.postValue(Resource.Success(ArrayList(savedData.value)))
+            _repository.postValue(Resource.Success(ArrayList(savedData.value)))
         }
     }
 

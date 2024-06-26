@@ -1,7 +1,6 @@
 package com.mobiiworld.ui.fragments
 
 import android.content.Context
-import androidx.fragment.app.viewModels
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -16,12 +15,11 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.mobiiworld.R
-import com.mobiiworld.SquareApplication
-import com.mobiiworld.adapters.NewsAdapter
-import com.mobiiworld.db.ArticleDatabase
-import com.mobiiworld.repository.NewsRepository
-import com.mobiiworld.ui.NewsViewModel
-import com.mobiiworld.ui.NewsViewModelProviderFactory
+import com.mobiiworld.adapters.SquareAdapter
+import com.mobiiworld.db.RepositoryDatabase
+import com.mobiiworld.repository.SquareRepository
+import com.mobiiworld.ui.SquareViewModel
+import com.mobiiworld.ui.SquareViewModelProviderFactory
 import com.mobiiworld.utils.Constants.Companion.QUERY_PAGE_SIZE
 import com.mobiiworld.utils.Resource
 
@@ -31,9 +29,9 @@ class ListFragment : Fragment() {
         fun newInstance() = ListFragment()
     }
 
-    lateinit var viewModel: NewsViewModel
+    lateinit var viewModel: SquareViewModel
     private lateinit var ctx: Context
-    lateinit var newsAdapter: NewsAdapter
+    lateinit var squareAdapter: SquareAdapter
     private var rvBreakingNews:RecyclerView? = null
     private var paginationProgressBar:ProgressBar? = null
     private var isFromDb = false
@@ -49,7 +47,7 @@ class ListFragment : Fragment() {
     ): View? {
         // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_list, container, false)
-        rvBreakingNews = view.findViewById(R.id.rvBreakingNews)
+        rvBreakingNews = view.findViewById(R.id.rvRepository)
         paginationProgressBar = view.findViewById(R.id.paginationProgressBar)
         return view
     }
@@ -58,17 +56,17 @@ class ListFragment : Fragment() {
         super.onCreate(savedInstanceState)
 
         //initializations and assign
-        val repository = NewsRepository(ArticleDatabase(ctx))
+        val repository = SquareRepository(RepositoryDatabase(ctx))
         val viewModelProviderFactory =
-            NewsViewModelProviderFactory(requireActivity().application, repository)
-        viewModel = ViewModelProvider(this, viewModelProviderFactory)[NewsViewModel::class.java]
+            SquareViewModelProviderFactory(requireActivity().application, repository)
+        viewModel = ViewModelProvider(this, viewModelProviderFactory)[SquareViewModel::class.java]
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupRecyclerView()
 
-        newsAdapter.setOnItemClickListener {
+        squareAdapter.setOnItemClickListener {
             val fragment = DetailFragment.newInstance(it)
             // Begin the transaction
             val fragmentManager = activity?.supportFragmentManager
@@ -78,25 +76,25 @@ class ListFragment : Fragment() {
             // Complete the changes added above
             fragmentTransaction?.commit()
         }
-//get saved news, observe on changes on out database
-        viewModel.getSavedArticle()?.observe(viewLifecycleOwner, Observer { articles -> //new list of articles
-            if (articles.isNullOrEmpty()){
+//get saved repository, observe on changes on out database
+        viewModel.getSavedRepositories()?.observe(viewLifecycleOwner, Observer { repositories -> //new list of repository
+            if (repositories.isNullOrEmpty()){
                 isFromDb = false
-                viewModel.getBreakingNews(QUERY_PAGE_SIZE)
+                viewModel.getRepositories(QUERY_PAGE_SIZE)
             } else {
                 isFromDb = true
-                newsAdapter.differ.submitList(articles) //update recyclerview //differ will calculate the difference between lists
+                squareAdapter.differ.submitList(repositories) //update recyclerview //differ will calculate the difference between lists
             }
         })
 
         //subscribe to live data
-        viewModel.breakingNews.observe(viewLifecycleOwner, Observer { response->
+        viewModel.repository.observe(viewLifecycleOwner, Observer { response->
             when(response){
                 is Resource.Success->{
                     hideProgressBar()
                     //check null
                     response.data?.let { newsResponse ->
-                        newsAdapter.differ.submitList(newsResponse.toList())
+                        squareAdapter.differ.submitList(newsResponse.toList())
 
                         isLastPage = viewModel.lastDataSize < QUERY_PAGE_SIZE
                         if (isLastPage){
@@ -122,9 +120,9 @@ class ListFragment : Fragment() {
 
 
     private fun setupRecyclerView(){
-        newsAdapter= NewsAdapter()
+        squareAdapter= SquareAdapter()
         rvBreakingNews?.apply {
-            adapter = newsAdapter
+            adapter = squareAdapter
             layoutManager = LinearLayoutManager(activity)
             addOnScrollListener(this@ListFragment.scrollListener)
         }
@@ -161,7 +159,7 @@ class ListFragment : Fragment() {
             val shouldPaginate = isNotLoadingAndNotLastPage && isAtLastItem && isNotAtBeginning && isTotalMoreThanVisible && isScrolling
 
             if (shouldPaginate && !isFromDb){
-                viewModel.getBreakingNews(QUERY_PAGE_SIZE)
+                viewModel.getRepositories(QUERY_PAGE_SIZE)
                 isScrolling= false
             }
         }
