@@ -1,0 +1,92 @@
+package com.mobiiworld.models
+
+import android.os.Parcelable
+import androidx.room.Entity
+import androidx.room.PrimaryKey
+import kotlinx.parcelize.Parcelize
+/*
+To save the article to database we need to annotate the class with entity
+which will tell the android studio that this article class is the table in database
+
+Here article will be the whole table and with columns
+ */
+@Entity(
+    tableName = "squares"
+)
+@Parcelize
+data class Square(var allowForking: Boolean? = false,
+                  var stargazers_count: Int? = 0,
+                  var pushed_at: String? = "",
+                  var subscription_url: String? = "",
+                  var language: String? = null,
+                  var branches_url: String? = "",
+                  var issue_comment_url: String? = "",
+                  var labels_url: String? = "",
+                  var subscribers_url: String? = "",
+                  var releases_url: String? = "",
+                  var svn_url: String? = "",
+                   @PrimaryKey var id: Int = 0,
+                  var has_discussions: Boolean? = false,
+                  var forks: Int? = 0,
+                  var archive_url: String? = "",
+                  var git_refs_url: String? = "",
+                  var forks_url: String? = "",
+                  var visibility: String? = "",
+                  var statuses_url: String? = "",
+                  var ssh_url: String? = "",
+                  var full_name: String? = "",
+                  var size: Int? = 0,
+                  var languages_url: String? = "",
+                  var html_url: String? = "",
+                  var collaborators_url: String? = "",
+                  var clone_url: String? = "",
+                  var name: String? = "",
+                  var pulls_url: String? = "",
+                  var default_branch: String? = "",
+                  var hooks_url: String? = "",
+                  var trees_url: String? = "",
+                  var tags_url: String? = "",
+                  var private: Boolean? = false,
+                  var contributors_url: String? = "",
+                  var hasDownloads: Boolean? = false,
+                  var notifications_url: String? = "",
+                  var openIssuesCount: Int? = 0,
+                  var description: String? = "",
+                  var createdAt: String? = "",
+                  var watchers: Int? = 0,
+                  var keys_url: String? = "",
+                  var deployments_url: String? = "",
+                  var hasProjects: Boolean? = false,
+                  var archived: Boolean? = false,
+                  var hasWiki: Boolean? = false,
+                  var updatedAt: String? = "",
+                  var comments_url: String? = "",
+                  var stargazers_url: String? = "",
+                  var disabled: Boolean? = false,
+                  var git_url: String? = "",
+                  var hasPages: Boolean? = false,
+                  var commits_url: String? = "",
+                  var compare_url: String? = "",
+                  var gitCommits_url: String? = "",
+                  var blobs_url: String? = "",
+                  var gitTags_url: String? = "",
+                  var merges_url: String? = "",
+                  var downloads_url: String? = "",
+                  var has_issues: Boolean? = false,
+                  var web_commit_signoff_required: Boolean? = false,
+                  var url: String? = "",
+                  var contents_url: String? = "",
+                  var mirror_url: String? = null,
+                  var milestones_url: String? = "",
+                  var teams_url: String? = "",
+                  var fork: Boolean? = false,
+                  var issues_url: String? = "",
+                  var events_url: String? = "",
+                  var issue_events_url: String? = "",
+                  var assignees_url: String? = "",
+                  var open_issues: Int? = 0,
+                  var watchers_count: Int? = 0,
+                  var node_id: String? = "",
+                  var homepage: String? = "",
+                  var forks_count: Int? = 0,
+    var isBookmarked:Boolean? = false):Parcelable
