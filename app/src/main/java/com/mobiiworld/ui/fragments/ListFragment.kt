@@ -32,7 +32,7 @@ class ListFragment : Fragment() {
     lateinit var viewModel: SquareViewModel
     private lateinit var ctx: Context
     lateinit var squareAdapter: SquareAdapter
-    private var rvBreakingNews:RecyclerView? = null
+    private var rvRepository:RecyclerView? = null
     private var paginationProgressBar:ProgressBar? = null
     private var isFromDb = false
 
@@ -47,7 +47,7 @@ class ListFragment : Fragment() {
     ): View? {
         // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_list, container, false)
-        rvBreakingNews = view.findViewById(R.id.rvRepository)
+        rvRepository = view.findViewById(R.id.rvRepository)
         paginationProgressBar = view.findViewById(R.id.paginationProgressBar)
         return view
     }
@@ -82,7 +82,9 @@ class ListFragment : Fragment() {
                 isFromDb = false
                 viewModel.getRepositories(QUERY_PAGE_SIZE)
             } else {
-                isFromDb = true
+                if (squareAdapter.itemCount == 0){
+                    isFromDb = true
+                }
                 squareAdapter.differ.submitList(repositories) //update recyclerview //differ will calculate the difference between lists
             }
         })
@@ -98,7 +100,7 @@ class ListFragment : Fragment() {
 
                         isLastPage = viewModel.lastDataSize < QUERY_PAGE_SIZE
                         if (isLastPage){
-                            rvBreakingNews?.setPadding(0,0,0,0)
+                            rvRepository?.setPadding(0,0,0,0)
                         }
                     }
                 }
@@ -121,7 +123,7 @@ class ListFragment : Fragment() {
 
     private fun setupRecyclerView(){
         squareAdapter= SquareAdapter()
-        rvBreakingNews?.apply {
+        rvRepository?.apply {
             adapter = squareAdapter
             layoutManager = LinearLayoutManager(activity)
             addOnScrollListener(this@ListFragment.scrollListener)
