@@ -101,26 +101,21 @@ class SquareViewModel(
 
     private suspend fun safeBreakingNewsCall(perPage:Int,page:Int){
         _repository.postValue(Resource.Loading(repository.value?.data))
-        val savedData = getSavedRepositories()
-        if (savedData?.value == null){
-            try{
-                if (hasInternetConnection()){
-                    val response = squareRepository.getRepositories(perPage,page)
-                    //handling response
-                    val data = handleBreakingNewsResponse(response)
-                    _repository.postValue(data)
-                }else{
-                    _repository.postValue(Resource.Error("No Internet Connection"))
-                }
-
-            } catch (t: Throwable){
-                when(t){
-                    is IOException-> _repository.postValue(Resource.Error("Network Failure"))
-                    else-> _repository.postValue(Resource.Error("Conversion Error"))
-                }
+        try{
+            if (hasInternetConnection()){
+                val response = squareRepository.getRepositories(perPage,page)
+                //handling response
+                val data = handleBreakingNewsResponse(response)
+                _repository.postValue(data)
+            }else{
+                _repository.postValue(Resource.Error("No Internet Connection"))
             }
-        } else {
-            _repository.postValue(Resource.Success(ArrayList(savedData.value)))
+
+        } catch (t: Throwable){
+            when(t){
+                is IOException-> _repository.postValue(Resource.Error("Network Failure"))
+                else-> _repository.postValue(Resource.Error("Conversion Error"))
+            }
         }
     }
 
